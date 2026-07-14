@@ -3,11 +3,14 @@
 import React from 'react';
 import { 
   Sparkles, Sun, Moon, Download, ShieldAlert, 
-  ArrowRight, Check, Tag, ChevronDown, CheckCircle2
+  ArrowRight, Check, Tag, ChevronDown, CheckCircle2, Loader2
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function PremiumReport() {
   const [reportData, setReportData] = React.useState<any>(null);
+  const [isDownloading, setIsDownloading] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,12 +40,37 @@ export default function PremiumReport() {
     }
   }, []);
 
+  const handleDownloadPDF = async () => {
+    const element = document.getElementById('report-content');
+    if (!element) return;
+    
+    setIsDownloading(true);
+    try {
+      const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      // If the content is longer than one page, this simple implementation will scale it to fit or cut it off.
+      // For a more robust solution, we could paginate, but this fits the hackathon requirement.
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('SkinSaver_Premium_Report.pdf');
+    } catch (error) {
+      console.error("Failed to generate PDF", error);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   if (!reportData) {
     return <div className="flex justify-center items-center h-screen"><span className="text-gray-500 font-medium flex items-center gap-2">Loading your premium report...</span></div>;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl" id="report-content">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end items-start justify-between mb-10 gap-5">
         <div className="w-full md:w-auto">
@@ -55,9 +83,13 @@ export default function PremiumReport() {
           </h1>
           <p className="text-gray-500 mt-2 text-sm md:text-base">Optimized for your skin type, concerns, and budget.</p>
         </div>
-        <button className="w-full md:w-auto h-11 px-6 rounded-full bg-white border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm">
-          <Download size={18} />
-          Download PDF Report
+        <button 
+          onClick={handleDownloadPDF}
+          disabled={isDownloading}
+          className="w-full md:w-auto h-11 px-6 rounded-full bg-white border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm disabled:opacity-50"
+        >
+          {isDownloading ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
+          {isDownloading ? "Generating PDF..." : "Download PDF Report"}
         </button>
       </div>
 

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Sparkles, Plus, Trash2, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
+import IngredientScanner from '@/components/scan/IngredientScanner';
 
 export default function WishlistPage() {
   const router = useRouter();
@@ -158,6 +159,9 @@ export default function WishlistPage() {
             </div>
           </div>
         </div>
+
+        {/* Phase 8: Ingredient OCR Scanner */}
+        <IngredientScanner />
 
         {/* Wishlist Card */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8">

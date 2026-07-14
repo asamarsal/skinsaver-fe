@@ -10,6 +10,7 @@ export default function SelfieUploader() {
   const [preview, setPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   // Cleanup object URL to prevent memory leaks
@@ -82,13 +83,37 @@ export default function SelfieUploader() {
           <div className="w-16 h-16 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <Camera size={32} />
           </div>
-          <span className="text-gray-900 font-medium mb-1">Click to take a photo or upload</span>
-          <span className="text-gray-500 text-xs">JPG, PNG, WEBP (Max 5MB)</span>
+          <span className="text-gray-900 font-medium mb-1">Click to upload or take a photo</span>
+          <span className="text-gray-500 text-xs mb-4">JPG, PNG, WEBP (Max 5MB)</span>
+          
+          <div className="flex gap-3 mt-2 w-full justify-center">
+            <button
+              onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+              className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium hover:bg-gray-50 text-gray-700"
+            >
+              Upload File
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); cameraInputRef.current?.click(); }}
+              className="px-4 py-2 bg-pink-100 border border-pink-200 rounded-full text-sm font-medium hover:bg-pink-200 text-pink-700 flex items-center gap-1.5"
+            >
+              <Camera size={14} /> Buka Kamera
+            </button>
+          </div>
+
           <input 
             type="file" 
             ref={fileInputRef} 
             onChange={handleFileChange} 
             accept="image/jpeg, image/png, image/webp"
+            className="hidden" 
+          />
+          <input 
+            type="file" 
+            ref={cameraInputRef} 
+            onChange={handleFileChange} 
+            accept="image/jpeg, image/png, image/webp"
+            capture="user"
             className="hidden" 
           />
         </div>
