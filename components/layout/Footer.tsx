@@ -16,7 +16,7 @@ export default function Footer() {
               SkinSaver AI provides visual observations for shopping recommendations. It cannot diagnose skin conditions, nor is it a substitute for professional medical advice. Always consult a dermatologist for medical concerns. Patch test all new products before full application.
             </p>
           </div>
-          
+
           <div className="flex flex-col items-start md:items-end gap-2 text-sm text-gray-500">
             <span className="font-medium text-gray-900">SkinSaver AI</span>
             <span>OKX.AI Agent Service Provider</span>

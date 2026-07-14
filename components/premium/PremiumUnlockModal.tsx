@@ -44,7 +44,7 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
 
       // Step 2: Request EIP-3009/x402 off-chain signature via OKX Wallet
       let signature = "0xMockPaymentSignature" + "1234567890abcdef".repeat(8);
-      
+
       if (typeof window !== 'undefined' && (window as any).okxwallet) {
         signature = await (window as any).okxwallet.request({
           method: 'personal_sign',
@@ -58,19 +58,19 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
           'X-Payment': signature
         }
       });
-      
+
       // Save the generated premium report to sessionStorage
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('skinsaver_premium_report', JSON.stringify(premiumResponse.data.data));
       }
 
       setPaymentState('success');
-      
+
       // Allow user to see success state before closing/redirecting
       setTimeout(() => {
         onSuccess();
       }, 1500);
-      
+
     } catch (error) {
       console.error("Payment failed", error);
       alert("Payment failed or was rejected. Please try again.");
@@ -83,10 +83,10 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl relative flex flex-col md:flex-row border border-gray-100">
-        
+      <div className="bg-white w-full max-w-[1300px] max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl relative flex flex-col md:flex-row border border-gray-100">
+
         {/* Close Button */}
-        <button 
+        <button
           onClick={onClose}
           disabled={isProcessing}
           className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors disabled:opacity-50"
@@ -95,22 +95,21 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
         </button>
 
         {/* Left Side: Value Proposition */}
-        <div className="w-full md:w-1/2 p-6 md:p-10 relative overflow-hidden bg-gradient-to-br from-pink-50 to-white shrink-0">
+        <div className="w-full md:w-3/5 p-6 md:p-10 relative overflow-hidden bg-gradient-to-br from-pink-50 to-white shrink-0">
           <div className="absolute top-0 left-0 w-full h-full bg-pink-100/50 rounded-full blur-[100px] opacity-40 -z-10 pointer-events-none" />
-          
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-bold uppercase tracking-wider mb-6">
-            <Sparkles size={14} /> Premium Audit Unlock
+
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-bold uppercase tracking-wider mb-6">Premium Audit Unlock
           </div>
-          
+
           <h2 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
-            Unlock Your <br/>
+            Unlock Your <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">Full SkinSaver Audit</span>
           </h2>
-          
+
           <p className="text-gray-500 mb-8 text-sm leading-relaxed">
             Get the complete AI analysis, personalized routine, product swaps, and a downloadable report designed just for your skin.
           </p>
-          
+
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 text-sm">What's Included</h3>
             <ul className="space-y-4">
@@ -120,7 +119,16 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold text-gray-900">Full Skin Selfie Report</h4>
-                  <p className="text-xs text-gray-500">Comprehensive 5D skin analysis with insights and root causes.</p>
+                  <p className="text-xs text-gray-500">Comprehensive 5D skin analysis with insights, scores, and root causes.</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="w-6 h-6 rounded-full bg-pink-100 flex items-center justify-center shrink-0">
+                  <Check size={12} className="text-pink-600" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900">Full Wishlist Audit</h4>
+                  <p className="text-xs text-gray-500">In-depth evaluation of every product with scores and recommendations.</p>
                 </div>
               </li>
               <li className="flex gap-3">
@@ -138,7 +146,16 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold text-gray-900">AM / PM Routine Builder</h4>
-                  <p className="text-xs text-gray-500">Personalized, step-by-step routines tailored to your goals.</p>
+                  <p className="text-xs text-gray-500">Personalized, step-by-step routines tailored to your goals and skin.</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="w-6 h-6 rounded-full bg-pink-100 flex items-center justify-center shrink-0">
+                  <Check size={12} className="text-pink-600" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900">Downloadable PDF Report</h4>
+                  <p className="text-xs text-gray-500">Your complete audit in a clean, shareable, downloadable report.</p>
                 </div>
               </li>
             </ul>
@@ -146,8 +163,8 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
         </div>
 
         {/* Right Side: Payment flow */}
-        <div className="w-full md:w-1/2 p-6 md:p-10 bg-white border-t md:border-t-0 md:border-l border-gray-100 flex flex-col justify-center shrink-0">
-          
+        <div className="w-full md:w-2/5 p-6 md:p-10 bg-white border-t md:border-t-0 md:border-l border-gray-100 flex flex-col justify-center shrink-0">
+
           {paymentState === 'success' ? (
             <div className="text-center py-8">
               <div className="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -185,7 +202,7 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
                       <p className="text-xs text-gray-500">{formatAddress(address)}</p>
                     </div>
                   ) : (
-                    <button 
+                    <button
                       onClick={connect}
                       className="text-xs font-semibold text-pink-600 hover:text-pink-700"
                     >
@@ -218,7 +235,7 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={handlePayment}
                 disabled={isProcessing}
                 className="w-full h-14 rounded-full bg-pink-500 text-white font-bold text-base hover:bg-pink-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-pink-500/20"
@@ -236,7 +253,7 @@ export default function PremiumUnlockModal({ isOpen, onClose, onSuccess }: Premi
                   </>
                 )}
               </button>
-              
+
               <p className="text-center text-xs text-gray-400 mt-4 flex items-center justify-center gap-1">
                 <ShieldCheck size={14} /> Secure, encrypted, off-chain signature.
               </p>

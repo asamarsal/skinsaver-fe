@@ -60,12 +60,12 @@ export default function OkxWalletConnect() {
     <button 
       onClick={connect}
       disabled={isConnecting}
-      className="h-9 px-3 md:px-4 inline-flex items-center justify-center gap-2 rounded-full bg-gray-900 text-sm font-medium text-white hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="h-9 px-4 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-sm font-semibold text-white hover:from-pink-600 hover:to-rose-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm shadow-pink-200"
     >
-      <Wallet size={16} />
+      <Wallet size={15} />
       {isConnecting 
         ? (isMobile ? "..." : "Connecting...") 
-        : (isMobile ? "Connect" : "Connect Wallet")}
+        : (isMobile ? "Connect" : "Connect OKX Wallet")}
     </button>
   );
 }
