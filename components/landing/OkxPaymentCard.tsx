@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import {
   Wallet, Check, CheckCircle2, Lock, Download,
   FileText, ShoppingBag, Sun, ThumbsUp, Copy,
-  ChevronDown, Sparkles,
+  ChevronDown, Sparkles, ScanFace, FlaskConical, Layers, Leaf
 } from 'lucide-react';
 import { useWallet } from '@/components/wallet/WalletProvider';
 
@@ -227,28 +227,83 @@ export default function OkxPaymentCard() {
       )}
 
       {/* Show preview of unlocked card even before payment */}
+      {/* New Premium Locked Layouts (From Image) */}
       {!paid && address && (
-        <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden opacity-60 mt-2">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                <Lock size={18} className="text-gray-400" />
+        <div className="flex flex-col gap-4 mt-4">
+          
+          {/* Card 1: Premium Status */}
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] overflow-hidden relative px-8 py-10">
+            <h3 className="font-bold text-gray-900 text-[16px] mb-6">Premium Status</h3>
+            <div className="flex items-start justify-between">
+              <div className="flex-1 pr-4">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="w-6 h-6 rounded-full bg-[#1db55c] flex items-center justify-center text-white shrink-0">
+                    <Check size={14} strokeWidth={3} />
+                  </div>
+                  <span className="text-[#de4998] font-bold text-[15px]">Not Unlocked</span>
+                </div>
+                <p className="text-gray-500 text-[14px] leading-relaxed max-w-[210px]">
+                  Complete payment to unlock your full premium audit.
+                </p>
               </div>
-              <div>
-                <p className="font-bold text-gray-500 text-[15px]">Premium Locked</p>
-                <p className="text-[12px] text-gray-400 mt-0.5">Pay 5 USDT above to unlock all features.</p>
+              <div className="relative shrink-0 w-[80px] h-[80px] mr-2 flex items-center justify-center">
+                <div className="w-full h-full bg-[#fcecf4] rounded-[20px] flex items-center justify-center relative shadow-sm border border-pink-50">
+                  <Lock size={36} className="text-[#f4a1cc]" style={{ fill: '#f4a1cc' }} />
+                  <Sparkles size={16} className="absolute -top-2 -right-3 text-pink-200" style={{ fill: '#fbcfe8' }} />
+                  <Sparkles size={12} className="absolute bottom-2 -left-3 text-pink-200" style={{ fill: '#fbcfe8' }} />
+                </div>
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 border-t border-gray-100">
-            {UNLOCKED_FEATURES.map((u, i) => (
-              <div key={i} className={`flex flex-col items-center gap-2 py-4 ${i < 3 ? 'border-r border-gray-100' : ''}`}>
-                <div className="p-2.5 bg-gray-50 rounded-[14px] grayscale opacity-50">{u.icon}</div>
-                <p className="text-[12px] font-bold text-gray-400 text-center">{u.label}</p>
-                <span className="text-[10px] text-gray-300 font-bold uppercase tracking-wider mt-0.5">Locked</span>
+
+          {/* Card 2: Your Audit At a Glance */}
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] overflow-hidden p-6">
+            <h3 className="font-bold text-gray-900 text-[15px] mb-5">Your Audit At a Glance</h3>
+            
+            <div className="grid grid-cols-4 gap-2.5">
+              {/* Box 1 */}
+              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_1px_8px_rgb(0,0,0,0.03)] rounded-[14px] py-3.5 gap-2.5">
+                <div className="w-9 h-9 bg-[#fcecf4] rounded-[10px] flex items-center justify-center text-[#de4998]">
+                  <ScanFace size={18} />
+                </div>
+                <div className="text-center">
+                  <p className="text-[10px] font-bold text-gray-900 leading-tight">Skin Score</p>
+                  <p className="text-[14px] font-black text-gray-400 mt-0.5">—</p>
+                </div>
               </div>
-            ))}
+              {/* Box 2 */}
+              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_1px_8px_rgb(0,0,0,0.03)] rounded-[14px] py-3.5 gap-2.5">
+                <div className="w-9 h-9 bg-[#f4effc] rounded-[10px] flex items-center justify-center text-[#8c62e5]">
+                  <FlaskConical size={18} />
+                </div>
+                <div className="text-center">
+                  <p className="text-[10px] font-bold text-gray-900 leading-tight">Risk Factors</p>
+                  <p className="text-[14px] font-black text-gray-400 mt-0.5">—</p>
+                </div>
+              </div>
+              {/* Box 3 */}
+              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_1px_8px_rgb(0,0,0,0.03)] rounded-[14px] py-3.5 gap-2.5">
+                <div className="w-9 h-9 bg-[#fff5ee] rounded-[10px] flex items-center justify-center text-[#f77e21]">
+                  <FileText size={18} />
+                </div>
+                <div className="text-center">
+                  <p className="text-[10px] font-bold text-gray-900 leading-tight">Products</p>
+                  <p className="text-[14px] font-black text-gray-400 mt-0.5">—</p>
+                </div>
+              </div>
+              {/* Box 4 */}
+              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_1px_8px_rgb(0,0,0,0.03)] rounded-[14px] py-3.5 gap-2.5">
+                <div className="w-9 h-9 bg-[#eef8f2] rounded-[10px] flex items-center justify-center text-[#1f9350]">
+                  <Leaf size={18} />
+                </div>
+                <div className="text-center">
+                  <p className="text-[10px] font-bold text-gray-900 leading-tight">Ingredients</p>
+                  <p className="text-[14px] font-black text-gray-400 mt-0.5">—</p>
+                </div>
+              </div>
+            </div>
           </div>
+          
         </div>
       )}
     </div>

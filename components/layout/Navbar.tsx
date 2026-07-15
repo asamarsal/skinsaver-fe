@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Sparkles, Menu, X, Wallet, Copy, Check } from 'lucide-react';
 import { useWallet } from '@/components/wallet/WalletProvider';
@@ -11,7 +11,14 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { address, network, balances, isConnecting, connect, disconnect, switchNetwork } = useWallet();
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleCopy = () => {
     if (address) {
@@ -37,8 +44,8 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="pt-4 px-4 md:px-6 lg:px-6 w-full flex justify-center sticky top-0 z-50">
-      <nav className="w-full max-w-none xl:max-w-[1536px] border border-gray-100 bg-white/90 backdrop-blur-md rounded-[20px] shadow-sm">
+    <div className={`w-full flex justify-center sticky top-0 z-50 transition-all duration-300 ease-out ${isScrolled ? 'pt-0 px-0' : 'pt-4 px-4 md:px-6 lg:px-6'}`}>
+      <nav className={`w-full bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 ease-out border border-gray-100 ${isScrolled ? 'max-w-full rounded-none border-x-0 border-t-0' : 'max-w-none xl:max-w-[1536px] rounded-[20px]'}`}>
         <div className="px-6 md:px-8 h-[72px] flex items-center justify-between">
           {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
