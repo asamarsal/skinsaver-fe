@@ -247,6 +247,18 @@ export default function PremiumReport() {
           </p>
         </div>
       </div>
+
+      {/* Powered by OKX.AI Badge */}
+      <div className="flex justify-center mt-8 mb-4">
+        <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-full">
+          <div className="w-5 h-5 bg-gray-900 rounded flex items-center justify-center shrink-0">
+            <span className="text-white text-[7px] font-bold leading-none">OKX</span>
+          </div>
+          <span className="text-xs font-medium text-gray-500">
+            Analysis powered by <strong className="text-gray-700">OKX.AI</strong> <span className="text-gray-300 mx-1.5">•</span> X Layer Network
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

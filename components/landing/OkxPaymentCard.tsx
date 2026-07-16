@@ -8,26 +8,45 @@ import {
   ChevronDown, Sparkles, ScanFace, FlaskConical, Layers, Leaf
 } from 'lucide-react';
 import { useWallet } from '@/components/wallet/WalletProvider';
+import { buildX402PaymentHeader } from '@/lib/x402';
+import toast from 'react-hot-toast';
 
 const UNLOCKED_FEATURES = [
-  { icon: <FileText   size={20} className="text-orange-400"  />, label: 'Full Report'          },
-  { icon: <ShoppingBag size={20} className="text-violet-500" />, label: 'Wishlist Audit'       },
-  { icon: <Sun        size={20} className="text-cyan-500"    />, label: 'Routine Builder'      },
-  { icon: <ThumbsUp   size={20} className="text-emerald-500" />, label: 'Cheaper Alternatives' },
+  { icon: <FileText size={20} className="text-orange-400" />, label: 'Full Report' },
+  { icon: <ShoppingBag size={20} className="text-violet-500" />, label: 'Wishlist Audit' },
+  { icon: <Sun size={20} className="text-cyan-500" />, label: 'Routine Builder' },
+  { icon: <ThumbsUp size={20} className="text-emerald-500" />, label: 'Cheaper Alternatives' },
 ];
 
 export default function OkxPaymentCard() {
   const { address, connect, isConnecting } = useWallet();
   const router = useRouter();
-  const [paid, setPaid]       = useState(false);
+  const [paid, setPaid] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [copied, setCopied]   = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const shortAddr = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : null;
 
-  const handlePay = () => {
-    setLoading(true);
-    setTimeout(() => { setPaid(true); setLoading(false); }, 1800);
+  const handlePay = async () => {
+    if (!address) return;
+    try {
+      setLoading(true);
+      
+      // Construct the EIP-3009 authorization header
+      toast.loading('Authorizing payment on X Layer...', { id: 'x402' });
+      const xPaymentHeader = await buildX402PaymentHeader(address, '5');
+      
+      // Simulate backend API call with the X-Payment header
+      // In production: await api.post('/asp/generate-premium-report', {}, { headers: { 'X-Payment': xPaymentHeader } });
+      
+      toast.success('Payment successful!', { id: 'x402' });
+      setPaid(true);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message.includes('reject') ? 'Transaction rejected' : 'Payment failed', { id: 'x402' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCopy = () => {
@@ -127,12 +146,12 @@ export default function OkxPaymentCard() {
                 </div>
                 <span className="text-[13px] font-bold text-gray-900 shrink-0 ml-2">5 USDT</span>
               </div>
-              
+
               <div className="flex justify-between text-[12px] text-gray-500 pt-1.5">
                 <span>Network</span>
                 <span>X Layer</span>
               </div>
-              
+
               <div className="border-t border-gray-100 pt-4 mt-2">
                 <div className="flex justify-between items-start">
                   <span className="text-[13px] text-gray-600 font-bold">You Pay</span>
@@ -142,7 +161,7 @@ export default function OkxPaymentCard() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-2 text-[11px] text-gray-500 leading-relaxed bg-gray-50/80 p-3 rounded-xl border border-gray-100 mt-3">
                 <CheckCircle2 size={16} className="text-pink-400 mt-0.5 shrink-0" />
                 <span>Secure payment with x402 protocol<br />Instant settlement · <span className="text-pink-500 font-bold">Instant unlock</span></span>
@@ -159,7 +178,7 @@ export default function OkxPaymentCard() {
                     className="w-full h-12 rounded-[14px] bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-[14px] transition-colors flex items-center justify-center gap-2 disabled:opacity-70 shadow-md shadow-pink-200"
                   >
                     {loading
-                      ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Processing…</>
+                      ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Authorizing...</>
                       : <><Lock size={16} /> Pay &amp; Unlock 5 USDT</>
                     }
                   </button>
@@ -228,11 +247,11 @@ export default function OkxPaymentCard() {
 
       {/* Show preview of unlocked card even before payment */}
       {/* New Premium Locked Layouts (From Image) */}
-      {!paid && address && (
-        <div className="flex flex-col gap-4 mt-4">
-          
+      {!paid && (
+        <div className={`flex flex-col gap-4 mt-2 transition-all duration-700 rounded-[36px] ${!address ? 'grayscale opacity-70 pointer-events-none select-none drop-shadow-[0_20px_30px_rgba(0,0,0,0.12)]' : ''}`}>
+
           {/* Card 1: Premium Status */}
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] overflow-hidden relative px-8 py-10">
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:-translate-y-1.5 hover:shadow-[0_12px_30px_rgb(0,0,0,0.08)] transition-all duration-300 overflow-hidden relative px-8 py-8">
             <h3 className="font-bold text-gray-900 text-[16px] mb-6">Premium Status</h3>
             <div className="flex items-start justify-between">
               <div className="flex-1 pr-4">
@@ -249,20 +268,18 @@ export default function OkxPaymentCard() {
               <div className="relative shrink-0 w-[80px] h-[80px] mr-2 flex items-center justify-center">
                 <div className="w-full h-full bg-[#fcecf4] rounded-[20px] flex items-center justify-center relative shadow-sm border border-pink-50">
                   <Lock size={36} className="text-[#f4a1cc]" style={{ fill: '#f4a1cc' }} />
-                  <Sparkles size={16} className="absolute -top-2 -right-3 text-pink-200" style={{ fill: '#fbcfe8' }} />
-                  <Sparkles size={12} className="absolute bottom-2 -left-3 text-pink-200" style={{ fill: '#fbcfe8' }} />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Card 2: Your Audit At a Glance */}
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] overflow-hidden p-6">
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:-translate-y-1.5 hover:shadow-[0_12px_30px_rgb(0,0,0,0.08)] transition-all duration-300 overflow-hidden p-6">
             <h3 className="font-bold text-gray-900 text-[15px] mb-5">Your Audit At a Glance</h3>
-            
+
             <div className="grid grid-cols-4 gap-2.5">
               {/* Box 1 */}
-              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_1px_8px_rgb(0,0,0,0.03)] rounded-[14px] py-3.5 gap-2.5">
+              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgb(0,0,0,0.06)] transition-all duration-300 cursor-pointer rounded-[14px] py-3.5 gap-2.5">
                 <div className="w-9 h-9 bg-[#fcecf4] rounded-[10px] flex items-center justify-center text-[#de4998]">
                   <ScanFace size={18} />
                 </div>
@@ -272,7 +289,7 @@ export default function OkxPaymentCard() {
                 </div>
               </div>
               {/* Box 2 */}
-              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_1px_8px_rgb(0,0,0,0.03)] rounded-[14px] py-3.5 gap-2.5">
+              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgb(0,0,0,0.06)] transition-all duration-300 cursor-pointer rounded-[14px] py-3.5 gap-2.5">
                 <div className="w-9 h-9 bg-[#f4effc] rounded-[10px] flex items-center justify-center text-[#8c62e5]">
                   <FlaskConical size={18} />
                 </div>
@@ -282,7 +299,7 @@ export default function OkxPaymentCard() {
                 </div>
               </div>
               {/* Box 3 */}
-              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_1px_8px_rgb(0,0,0,0.03)] rounded-[14px] py-3.5 gap-2.5">
+              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgb(0,0,0,0.06)] transition-all duration-300 cursor-pointer rounded-[14px] py-3.5 gap-2.5">
                 <div className="w-9 h-9 bg-[#fff5ee] rounded-[10px] flex items-center justify-center text-[#f77e21]">
                   <FileText size={18} />
                 </div>
@@ -292,7 +309,7 @@ export default function OkxPaymentCard() {
                 </div>
               </div>
               {/* Box 4 */}
-              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_1px_8px_rgb(0,0,0,0.03)] rounded-[14px] py-3.5 gap-2.5">
+              <div className="flex flex-col items-center justify-center border border-gray-50 bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgb(0,0,0,0.06)] transition-all duration-300 cursor-pointer rounded-[14px] py-3.5 gap-2.5">
                 <div className="w-9 h-9 bg-[#eef8f2] rounded-[10px] flex items-center justify-center text-[#1f9350]">
                   <Leaf size={18} />
                 </div>
@@ -303,7 +320,7 @@ export default function OkxPaymentCard() {
               </div>
             </div>
           </div>
-          
+
         </div>
       )}
     </div>

@@ -224,6 +224,8 @@ export function WalletProvider({ children }: Readonly<{ children: React.ReactNod
       localStorage.removeItem('skinsaver_token');
     } catch (error) {
       console.error("Wallet disconnection failed:", error);
+    } finally {
+      setIsConnecting(false);
     }
   };
 
