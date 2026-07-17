@@ -20,7 +20,7 @@ export default function WalletStatusPanel() {
   const isConnected = !!address;
 
   return (
-    <div className="bg-white rounded-[24px] border border-gray-200 shadow-sm overflow-hidden flex flex-col mt-4 h-full min-h-[230px]">
+    <div className="bg-white rounded-[24px] border border-gray-200 shadow-sm overflow-hidden flex flex-col mt-4 h-full min-h-[260px]">
       <div className="p-3 md:p-4 flex-1 flex flex-col border-b border-gray-100">
         <div className="flex items-center justify-between mb-1.5">
           <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Wallet Connection</h3>
